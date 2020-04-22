@@ -43,8 +43,8 @@ class CompositeAnimator {
     this.animate(before, after, done);
   }
 
-  drawStatic(afterFn, resetCanvas, layerPredicate) {
-    if (resetCanvas) {
+  drawStatic(afterFn, shouldResetCanvas, layerPredicate) {
+    if (shouldResetCanvas) {
       this.clearCanvas();      
     }
     const context = this.canvas.getContext('2d');
@@ -54,7 +54,7 @@ class CompositeAnimator {
     }).sort(
       (a, b) => a > b // sort layer from the deepest one to the topmost
     );
-    console.log(resetCanvas? 'BEFORE':'AFTER', 'LAYERS COUNT=', layersToRender.length, 'STATICS=', this.staticQuery.length);
+    console.log(shouldResetCanvas? 'BEFORE':'AFTER', 'LAYERS COUNT=', layersToRender.length, 'STATICS=', this.staticQuery.length);
     layersToRender.forEach((layerIndex) => {
       const animators = this.staticQuery.filter(animator => animator.layerIndex === layerIndex);
       animators.forEach(animator => animator.drawStatic(context));
