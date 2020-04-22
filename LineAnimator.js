@@ -7,7 +7,7 @@ class LineAnimator {
     this.xEnd = xEnd;
     this.yEnd = yEnd;
     this.strokeWidth = strokeWidth;    
-    this.color = `#${color.toString(16)}`;
+    this.strokeColor = `#${color.toString(16)}`;
     this.animationDuration = distance(xStart, yStart, xEnd, yEnd)*durationPerPixelInMillis;
     this.layerIndex = layerIndex;
 }
@@ -51,8 +51,8 @@ class LineAnimator {
     context.beginPath();
     context.moveTo(xStart, yStart);
     context.lineTo(xEnd, yEnd);
-    context.strokeWidth = strokeWidth;
-    context.strokeColor = strokeColor;
+    context.lineWidth = strokeWidth;
+    context.strokeStyle = strokeColor;
     context.stroke();
 
     context.restore();

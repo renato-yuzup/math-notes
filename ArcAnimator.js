@@ -8,7 +8,7 @@ class ArcAnimator {
     this.startAngle = startAngle;
     this.endAngle = endAngle;
     this.strokeWidth = strokeWidth;    
-    this.color = `#${color.toString(16)}`;
+    this.strokeColor = `#${color.toString(16)}`;
     this.animationDuration = (endAngle - startAngle) * durationPerDegressInMillis;
     this.layerIndex = layerIndex;
 }
@@ -50,8 +50,8 @@ class ArcAnimator {
 
     context.beginPath();
     context.arc(x, y, radius, startAngle, endAngle);
-    context.strokeWidth = strokeWidth;
-    context.strokeColor = strokeColor;
+    context.lineWidth = strokeWidth;
+    context.strokeStyle = strokeColor;
     context.stroke();
 
     context.restore();
