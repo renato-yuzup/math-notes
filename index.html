@@ -1,0 +1,70 @@
+<html>
+
+<head>
+  <title>Tangent line to a circle</title>
+  <link rel="stylesheet" type="text/css" href="circle-tangent-line.css" />
+</head>
+
+<body>
+  <article class="problemInfo">
+    <section class="circleData">
+      <div class="dataTitle">Circle data</div>
+      <div>X<sub>C</sub></div>
+      <input type="text" id="circleX" />
+      <div>Y<sub>C</sub></div>
+      <input type="text" id="circleY" />
+      <div>Radius</div>
+      <input type="text" id="circleRadius" />
+    </section>
+    <section class="pointData">
+      <div class="dataTitle">External point</div>
+      <div>X<sub>P</sub></div>
+      <input type="text" id="externalPointX" />
+      <div>Y<sub>P</sub></div>
+      <input type="text" id="externalPointY" />
+    </section>
+    <section class="pathData">
+      <div class="dataTitle">Path starting point</div>
+      <div class="dataDescription">
+        This is where the path starts and it is a point of the circle.
+        You can specify by its coordinates or the angle that it constitutes in the circle.
+      </div>
+      <div>
+        Specify by
+      </div>
+      <select id="startPointSelectMode">
+        <option value="coordinate" selected>coordinate</option>
+        <option value="angle">angle</option>
+      </select>
+      <section id="startPointFormPoint">
+        <div>X<sub>S</sub></div>
+        <input type="text" id="startingPointX" />
+        <div>Y<sub>S</sub></div>
+        <input type="text" id="startingPointY" />
+      </section>
+      <section id="startPointFormAngle">
+        <div>
+          Angle
+        </div>
+        <input type="text" id="startingAngle" />
+        <select id="angleUnit">
+          <option value="radian">Radians</option>
+          <option value="degree" selected>Degrees</option>
+        </select>
+      </section>
+    </section>
+    <section class="problemControl">
+      <button id="submit">Solve and draw!</button>
+    </section>
+  </article>
+  <canvas id="graph" width=720 height=600 />
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js" lang="javascript"></script>
+  <script src="animUtils.js" lang="javascript"></script>
+  <script src="PointAnimator.js" lang="javascript"></script>
+  <script src="ArcAnimator.js" lang="javascript"></script>
+  <script src="LineAnimator.js" lang="javascript"></script>
+  <script src="CompositeAnimator.js" lang="javascript"></script>
+  <script src="circle-tangent-line.js" lang="javascript"></script>
+</body>
+
+</html>

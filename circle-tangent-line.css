@@ -1,0 +1,48 @@
+article.problemInfo {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 12pt;
+  margin: 0 auto;
+}
+
+article.problemInfo section {
+  flex-basis: 200px;
+  border: 1px solid gainsboro;
+  box-sizing: border-box;
+  padding: 6px;
+  margin: 8px;
+  font-size: 9pt;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+article.problemInfo section div ~ .dataTitle {
+  grid-column: 1;
+}
+
+article.problemInfo section input, select ~ .dataTitle {
+  grid-column: 2;
+  margin: 4px;
+}
+
+article.problemInfo section section {
+  grid-column: 1 / span 2;
+}
+
+.dataDescription {
+  grid-column: 1 / span 2;
+  padding-bottom: 8px;
+}
+
+.dataTitle {
+  grid-column: 1 / span 2;
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 12pt;
+}
+
+canvas {
+  border: 1px solid gray;
+}
