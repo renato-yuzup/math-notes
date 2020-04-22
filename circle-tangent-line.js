@@ -144,6 +144,9 @@ CircleTangentProblem.prototype = {
     ctx.lineWidth = 3;
     ctx.stroke();
 
+    this.xStart = Math.cos(this.startingAngle) * r + this.xCenter;
+    this.yStart = Math.sin(this.startingAngle) * r + this.yCenter;
+
     const anim = new CompositeAnimator(
       canvas,
       new PointAnimator(this.xStart, this.yStart, this.startDotColor, 0),
