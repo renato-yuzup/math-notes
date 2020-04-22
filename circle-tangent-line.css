@@ -46,3 +46,7 @@ article.problemInfo section section {
 canvas {
   border: 1px solid gray;
 }
+
+.hidden {
+  display: none!important;
+}

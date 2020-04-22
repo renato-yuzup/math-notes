@@ -15,9 +15,9 @@ function init() {
 function setElementVisible(element, isVisible) {
   element[0].hidden = !isVisible;
   if (isVisible) {
-    element.show();
+    $(element).removeClass('hidden');
   } else {
-    element.hide();
+    $(element).addClass('hidden');
   }
 }
 
