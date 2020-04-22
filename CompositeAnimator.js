@@ -50,7 +50,7 @@ class CompositeAnimator {
     const context = this.canvas.getContext('2d');
     const layerIndexes = this.staticQuery.map(animator => animator.layerIndex);
     const layersToRender = layerIndexes.filter((value, index, self) => {
-      return layerPredicate() && self.indexOf(value) === index;
+      return layerPredicate(value) && self.indexOf(value) === index;
     }).sort(
       (a, b) => a > b // sort layer from the deepest one to the topmost
     );
