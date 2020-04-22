@@ -71,7 +71,7 @@ CircleTangentProblem.prototype = {
     
     let xP = this.xTarget - this.xCenter;
     let yP = this.yTarget - this.yCenter;
-    const s = this.squaredDistance(0, 0, xP, yP);
+    const s = squaredDistance(xP, yP);
     const r = this.radius;
     const h = s - r*r;
 
@@ -125,8 +125,8 @@ CircleTangentProblem.prototype = {
 
     this.startingAngle = this.getStartingAngle();
     let tangentAngle = [];
-    tangentAngle[0] = this.getAngleFromPoint(xTangent[0], yTangent[0], r);
-    tangentAngle[1] = this.getAngleFromPoint(xTangent[1], yTangent[1], r);
+    tangentAngle[0] = getAngleFromPoint(xTangent[0] - this.xCenter, yTangent[0] - this.yCenter, r);
+    tangentAngle[1] = getAngleFromPoint(xTangent[1] - this.xCenter, yTangent[1] - this.yCenter, r);
 
     let tangentIndex = 0;
     const a = this.isTangentSmoothPath(tangentAngle[1], r, xP - this.xCenter, yP - this.yCenter);
@@ -168,23 +168,6 @@ CircleTangentProblem.prototype = {
     return dTest > dRef;
   },
 
-  squaredDistance: function (x1, y1, x2, y2) {
-    const dx = x1 - x2;
-    const dy = y1 - y2;
-    return dx*dx + dy*dy;
-  },
-
-  getAngleFromPoint: function (x, y, radius) {
-    const xi = x - this.xCenter;
-    const yi = y - this.yCenter;
-    const cos = xi / radius;
-    let angle = Math.acos(cos);
-    if (yi < 0) {
-      angle = 2*Math.PI - angle;
-    }
-    return angle;
-  },
-
   getStartingAngle: function() {
     const inputByAngle = document.getElementById('startPointSelectMode').value === 'angle';
     let angle;
@@ -197,7 +180,7 @@ CircleTangentProblem.prototype = {
     } else {
       const x = Number(document.getElementById('startingPointX').value);
       const y = Number(document.getElementById('startingPointY').value);
-      angle = this.getAngleFromPoint(x, y, this.radius);
+      angle = getAngleFromPoint(x - this.xCenter, y - this.yCenter, this.radius);
     }
     return angle;
   },
