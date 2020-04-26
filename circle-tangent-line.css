@@ -1,14 +1,19 @@
+.contents {
+  margin: auto;
+  width: 960px;
+  font-family: sans-serif;
+}
+
 article.problemInfo {
   font-family: sans-serif;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   font-size: 12pt;
-  margin: 0 auto;
 }
 
 article.problemInfo section {
-  flex-basis: 200px;
+  flex-basis: 120px;
   border: 1px solid gainsboro;
   box-sizing: border-box;
   padding: 6px;
@@ -16,6 +21,11 @@ article.problemInfo section {
   font-size: 9pt;
   display: grid;
   grid-template-columns: auto auto;
+}
+
+.label {
+  line-height: 33px;
+  vertical-align: middle;
 }
 
 article.problemInfo section div ~ .dataTitle {
@@ -45,8 +55,45 @@ article.problemInfo section section {
 
 canvas {
   border: 1px solid gray;
+  width: 100%;
 }
 
 .hidden {
   display: none!important;
+}
+
+button {
+  border: 1px solid #599BCF;
+  color: #246C8C;
+  background-color: #A1C7E5;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 6px;
+  font-weight: bold;
+}
+
+button:hover{
+  border: 1px solid #54A2C5;
+  color: #246C8C;
+  background-color: #A4E3FF;
+}
+
+button:active{
+  border: 1px solid #54A2C5;
+  color: #C4DEE9;
+  background-color: #86BAD1;
+}
+
+input[type=text] {
+  border: 1px solid gainsboro;
+  border-radius: 8px;
+  padding: 4px;
+  box-sizing: border-box;
+  font-family: 12px;
+  width: 128px;
+}
+
+input[type=text]:focus {
+  border: 1px solid royalblue;
+  outline: none;
 }
