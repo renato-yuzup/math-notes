@@ -1,21 +1,32 @@
-const durationPerPixelInMillis = 1.01;
+//const durationPerPixelInMillis = 1.01;
 
 class LineAnimator {
-  constructor(xStart, yStart, xEnd, yEnd, strokeWidth, color, layerIndex) {
+  constructor(xStart, yStart, xEnd, yEnd, strokeWidth, color, layerIndex, problemViewport, screenViewport) {
     this.xStart = xStart;
     this.yStart = yStart;
     this.xEnd = xEnd;
     this.yEnd = yEnd;
     this.strokeWidth = strokeWidth;    
     this.strokeColor = `#${color.toString(16)}`;
-    this.animationDuration = distance(xStart, yStart, xEnd, yEnd)*durationPerPixelInMillis;
+    this.animationDuration = distance(xStart, yStart, xEnd, yEnd) / LineAnimator.velocity() * 1000;
     this.layerIndex = layerIndex;
-}
+    this.problemViewport = problemViewport;
+    this.screenViewport = screenViewport;
+  }
 
-  start(context, before, after, done) {
+  static velocity() {
+    if (typeof velocityInPixelsPerSecond === 'undefined') {
+      return 256;
+    }
+    return velocityInPixelsPerSecond;
+  }
+
+  start(context, before, after) {
     this.startTime = Date.now();
-    const animateFn = this.animate.bind(this, context, before, after, done);
-    window.requestAnimationFrame(animateFn);
+    return new Promise((resolve) => {
+      const animateFn = this.animate.bind(this, context, before, after, resolve);
+      window.requestAnimationFrame(animateFn);
+    });
   }
 
   animate(context, before, after, done) {
@@ -49,8 +60,7 @@ class LineAnimator {
     context.save();
 
     context.beginPath();
-    context.moveTo(xStart, yStart);
-    context.lineTo(xEnd, yEnd);
+    drawLineOnViewport(context, xStart, yStart, xEnd, yEnd, this.problemViewport, this.screenViewport);
     context.lineWidth = strokeWidth;
     context.strokeStyle = strokeColor;
     context.stroke();

@@ -8,11 +8,13 @@ class CompositeAnimator {
     this.animators.push(animator);
   }
 
-  start(before, after, done) {
+  start(before, after) {
     this.animationQuery = this.animators.slice();
     this.staticQuery = [];
     this.currentAnimator = null;
-    this.animate(before, after, done);    
+    return new Promise((resolve) => {
+      this.animate(before, after, resolve);
+    });
   }
 
   animate(before, after, done) {
@@ -29,11 +31,23 @@ class CompositeAnimator {
 
     const currentLayerIndex = this.currentAnimator.layerIndex;
     const context = this.canvas.getContext('2d');
-    const beforeFn = this.drawStatic.bind(this, before, true, (layerIndex) => layerIndex >= currentLayerIndex);
-    const afterFn = this.drawStatic.bind(this, after, false, (layerIndex) => layerIndex < currentLayerIndex);
-    const doneFn = this.pullNextAnimation.bind(this, before, after, done);
+    const beforeFn = () => {
+      this.clearCanvas();
+      if (before) {
+        before();
+      }
+      this.drawStatic((layerIndex) => layerIndex >= currentLayerIndex);
+    };
+    const afterFn = () => {
+      this.drawStatic((layerIndex) => layerIndex < currentLayerIndex);
+      if (after) {
+        after();
+      }
+    };
 
-    this.currentAnimator.start(context, beforeFn, afterFn, doneFn);
+    this.currentAnimator.start(context, beforeFn, afterFn).then(() => {
+      this.pullNextAnimation(before, after, done);
+    });
   }
 
   pullNextAnimation(before, after, done) {
@@ -43,10 +57,7 @@ class CompositeAnimator {
     this.animate(before, after, done);
   }
 
-  drawStatic(afterFn, shouldResetCanvas, layerPredicate) {
-    if (shouldResetCanvas) {
-      this.clearCanvas();      
-    }
+  drawStatic(layerPredicate) {
     const context = this.canvas.getContext('2d');
     const layerIndexes = this.staticQuery.map(animator => animator.layerIndex);
     const layersToRender = layerIndexes.filter((value, index, self) => {
@@ -54,15 +65,11 @@ class CompositeAnimator {
     }).sort(
       (a, b) => a > b // sort layer from the deepest one to the topmost
     );
-    console.log(shouldResetCanvas? 'BEFORE':'AFTER', 'LAYERS COUNT=', layersToRender.length, 'STATICS=', this.staticQuery.length);
+    //console.log(shouldResetCanvas? 'BEFORE':'AFTER', 'LAYERS COUNT=', layersToRender.length, 'STATICS=', this.staticQuery.length);
     layersToRender.forEach((layerIndex) => {
       const animators = this.staticQuery.filter(animator => animator.layerIndex === layerIndex);
       animators.forEach(animator => animator.drawStatic(context));
     });
-
-    if (afterFn) {
-      afterFn();
-    }
   }
 
   clearCanvas() {
@@ -70,8 +77,5 @@ class CompositeAnimator {
     const context = canvas.getContext('2d');
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.lineWidth = 1;
-    context.translate(canvas.width / 2, canvas.height / 2);
-    context.scale(1, -1);
   }
 }

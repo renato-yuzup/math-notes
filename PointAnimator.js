@@ -1,11 +1,13 @@
 const animationDurationInMillis = 500;
 const pointSizeInPixels = 16;
 
-const PointAnimator = function(x, y, color, layerIndex) {
+const PointAnimator = function(x, y, color, layerIndex, problemViewport, screenViewport) {
   this.x = x;
   this.y = y;
   this.color = `#${color.toString(16)}`;
   this.layerIndex = layerIndex;
+  this.problemViewport = problemViewport;
+  this.screenViewport = screenViewport;
 };
 
 PointAnimator.prototype = {
@@ -18,10 +20,13 @@ PointAnimator.prototype = {
   pointSizeAtLastFrame: 0,
   layerIndex: 0,
 
-  start(context, before, after, done) {
+  start(context, before, after) {
     this.startTime = Date.now();
-    const animateFn = this.animate.bind(this, context, before, after, done);
-    window.requestAnimationFrame(animateFn);
+    const animateFn = this.animate.bind(this, context, before, after);
+    return new Promise((resolve) => {
+      const animateFn = this.animate.bind(this, context, before, after, resolve);
+      window.requestAnimationFrame(animateFn);
+    });
   },
 
   animate(context, before, after, done) {
@@ -45,7 +50,6 @@ PointAnimator.prototype = {
     const alphaTheta = normalT * Math.PI;
     const alpha = Math.abs(Math.sin(alphaTheta));
     this.haloColor = addTransparencyToColor(this.color, alpha);
-    console.log(this.haloColor);
     this.drawFrame(context, haloSize, size);
 
     if (after) {
@@ -66,16 +70,17 @@ PointAnimator.prototype = {
 
   drawFrame(context, haloSize, pointSize) {
     context.save();
+    const screenPoint = transformPoint(this.x, this.y, this.problemViewport, this.screenViewport);
 
     // Draw halo
     context.beginPath();
-    context.arc(this.x, this.y, haloSize / 2, 0, 2*Math.PI);
+    context.arc(screenPoint.x, screenPoint.y, haloSize / 2, 0, 2*Math.PI);
     context.strokeStyle = this.haloColor;
     context.stroke();    
 
     // Draw point
     context.beginPath();
-    context.arc(this.x, this.y, pointSize / 2, 0, 2*Math.PI);
+    context.arc(screenPoint.x, screenPoint.y, pointSize / 2, 0, 2*Math.PI);
     context.fillStyle = this.color;
     context.fill();
 

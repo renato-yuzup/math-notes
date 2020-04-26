@@ -1,7 +1,9 @@
-const durationPerDegressInMillis = 6 * (180 / Math.PI);
+//const durationPerDegressInMillis = 6 * (180 / Math.PI);
+//const velocityInPixelsPerSecond = 96;
 
 class ArcAnimator {
-  constructor(x, y, radius, startAngle, endAngle, strokeWidth, color, layerIndex) {
+
+  constructor(x, y, radius, startAngle, endAngle, strokeWidth, color, layerIndex, problemViewport, screenViewport) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -9,14 +11,29 @@ class ArcAnimator {
     this.endAngle = endAngle;
     this.strokeWidth = strokeWidth;    
     this.strokeColor = `#${color.toString(16)}`;
-    this.animationDuration = (endAngle - startAngle) * durationPerDegressInMillis;
+    this.problemViewport = problemViewport;
+    this.screenViewport = screenViewport;
+    if (endAngle < startAngle) {
+      this.endAngle += 2*Math.PI;
+    }
+    this.animationDuration = (this.endAngle - this.startAngle) * radius / ArcAnimator.velocity() * 1000;
+    console.log(this.startAngle, this.endAngle, this.animationDuration);
     this.layerIndex = layerIndex;
-}
+  }
 
-  start(context, before, after, done) {
+  static velocity() {
+    if (typeof velocityInPixelsPerSecond === 'undefined') {
+      return 256;
+    }
+    return velocityInPixelsPerSecond;
+  }
+
+  start(context, before, after) {
     this.startTime = Date.now();
-    const animateFn = this.animate.bind(this, context, before, after, done);
-    window.requestAnimationFrame(animateFn);
+    return new Promise((resolve) => {
+      const animateFn = this.animate.bind(this, context, before, after, resolve);
+      window.requestAnimationFrame(animateFn);
+    });
   }
 
   animate(context, before, after, done) {
@@ -49,7 +66,7 @@ class ArcAnimator {
     context.save();
 
     context.beginPath();
-    context.arc(x, y, radius, startAngle, endAngle);
+    drawArcOnViewport(context, x, y, radius, startAngle, endAngle, this.problemViewport, this.screenViewport);
     context.lineWidth = strokeWidth;
     context.strokeStyle = strokeColor;
     context.stroke();

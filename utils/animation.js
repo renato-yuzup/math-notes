@@ -46,14 +46,77 @@ const decomposeRGB = (color) => {
 
 const rgbToColor = (r, g, b) => {
   return (r << 16) + (g << 8) + b;
-}
+};
 
 const lerp = (a, b, t) => {
   return a + (b-a) * t;
-}
+};
 
 const distance = (x1, y1, x2, y2) => {
   const dx = x2 - x1;
   const dy = y2 - y1;
   return Math.sqrt(dx*dx + dy*dy);
 };
+
+const getViewportCenter = (viewport) => {
+  return {
+    x: (viewport.x1 + viewport.x2) / 2,
+    y: (viewport.y1 + viewport.y2) / 2,
+  };
+};
+
+const getAspectRatio = (virtualViewport, screenViewport) => {
+  const vw = virtualViewport.x2 - virtualViewport.x1;
+  const vh = virtualViewport.y2 - virtualViewport.y1;
+  const sw = screenViewport.x2 - screenViewport.x1;
+  const sh = screenViewport.y2 - screenViewport.y1;
+  const dw = vw / sw;
+  const dh = vh / sh;
+  return dw > dh ? dw : dh;
+};
+
+const drawArcOnViewport = (context, x, y, radius, startAngle, endAngle, virtualViewport, screenViewport) => {
+  if (!virtualViewport) {
+    context.arc(x, y, radius, startAngle, endAngle);
+    return;
+  }
+  const virtualCenter = getViewportCenter(virtualViewport);
+  const screenCenter = getViewportCenter(screenViewport);
+  const aspectRatio = getAspectRatio(virtualViewport, screenViewport);
+  const xt = (x - virtualCenter.x) / aspectRatio + screenCenter.x;
+  const yt = (y - virtualCenter.y) / aspectRatio + screenCenter.y;
+  const rt = radius / aspectRatio;
+  context.arc(xt, yt, rt, startAngle, endAngle);
+};
+
+const drawLineOnViewport = (context, x1, y1, x2, y2, virtualViewport, screenViewport) => {
+  if (!virtualViewport) {
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    return;
+  }
+  const virtualCenter = getViewportCenter(virtualViewport);
+  const screenCenter = getViewportCenter(screenViewport);
+  const aspectRatio = getAspectRatio(virtualViewport, screenViewport);
+  const x1t = (x1 - virtualCenter.x) / aspectRatio + screenCenter.x;
+  const y1t = (y1 - virtualCenter.y) / aspectRatio + screenCenter.y;
+  const x2t = (x2 - virtualCenter.x) / aspectRatio + screenCenter.x;
+  const y2t = (y2 - virtualCenter.y) / aspectRatio + screenCenter.y;
+  context.moveTo(x1t, y1t);
+  context.lineTo(x2t, y2t);
+};
+
+const transformPoint = (x, y, virtualViewport, screenViewport) => {
+  if (!virtualViewport) {
+    return {x, y};
+  }
+  const virtualCenter = getViewportCenter(virtualViewport);
+  const screenCenter = getViewportCenter(screenViewport);
+  const aspectRatio = getAspectRatio(virtualViewport, screenViewport);
+  const xt = (x - virtualCenter.x) / aspectRatio + screenCenter.x;
+  const yt = (y - virtualCenter.y) / aspectRatio + screenCenter.y;
+  return {
+    x: xt,
+    y: yt,
+  };
+}
